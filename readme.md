@@ -58,7 +58,7 @@ Returns an array of errors, relevant if you're attempting to submit a job applic
 
 ```
 
-### Custom Job Application Form
+#### Custom Job Application Form
 
 You can create your own form and validation and submit it with an `action` field set to `lever/apply`. Use any fields named exactly as seen in the [postings API](https://github.com/lever/postings-api), with `jobId`, `name`, and `email` being required.
 
