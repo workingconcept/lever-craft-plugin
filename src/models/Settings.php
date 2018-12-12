@@ -45,7 +45,7 @@ class Settings extends Model
         return [
             [['apiKey', 'site', 'applicationSource'], 'string'],
             [['applySilently'], 'boolean'],
-            [['apiKey', 'site', 'applicationSource', 'applySilently'], 'required'],
+            [['apiKey', 'site', 'applicationSource'], 'required'],
         ];
     }
 
