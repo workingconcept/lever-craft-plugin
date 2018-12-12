@@ -1,0 +1,49 @@
+{
+    "name": "workingconcept/craft-lever",
+    "description": "Lever + Craft CMS.",
+    "type": "craft-plugin",
+    "version": "1.0.0-beta.1",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "lever"
+    ],
+    "support": {
+        "docs": "https://github.com/workingconcept/lever-craft-plugin/blob/master/readme.md",
+        "issues": "https://github.com/workingconcept/lever-craft-plugin/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Working Concept",
+            "homepage": "https://workingconcept.com"
+        }
+    ],
+    "require": {
+        "php": "^7.0.0",
+        "craftcms/cms": "^3.0.0",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+          "workingconcept\\lever\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Lever",
+        "handle": "lever",
+        "schemaVersion": "1.0.0",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://github.com/workingconcept/lever-craft-plugin/blob/master/changelog.md",
+        "components": {
+            "leverService": "workingconcept\\lever\\services\\leverService"
+        },
+        "class": "workingconcept\\lever\\Lever",
+        "downloadUrl": "https://github.com/workingconcept/lever-craft-plugin/archive/master.zip",
+        "developer": "Working Concept",
+        "developerUrl": "https://workingconcept.com/"
+    }
+}
