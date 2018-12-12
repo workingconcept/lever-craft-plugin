@@ -1,5 +1,9 @@
 # Lever Changelog
 
+## 1.0.0-beta.3 - 2018-12-12
+### Changed
+- Fixed model bug.
+
 ## 1.0.0-beta.2 - 2018-12-12
 ### Changed
 - Updated Settings.
