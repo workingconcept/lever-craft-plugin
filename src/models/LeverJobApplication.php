@@ -91,7 +91,6 @@ class LeverJobApplication extends Model
     {
         return [
             [['name', 'email', 'phone', 'org', 'comments', 'source', 'ip'], 'string'],
-            [['urls', 'consent'], 'array'],
             [['silent'], 'boolean'],
             ['resume', 'file'],
             [['name', 'email'], 'required'],
