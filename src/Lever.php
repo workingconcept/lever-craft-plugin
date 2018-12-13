@@ -24,7 +24,7 @@ use yii\base\Event;
  * @package   Lever
  * @since     1.0.0
  *
- * @property  LeverService $leverService
+ * @property  LeverService $api
  */
 class Lever extends \craft\base\Plugin
 {
