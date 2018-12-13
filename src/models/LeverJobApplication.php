@@ -31,7 +31,7 @@ class LeverJobApplication extends Model
     public $email;
 
     /**
-     * @var yii\web\UploadedFile Resume data. Only in `multipart/form-data` mode. Should be a file.
+     * @var \yii\web\UploadedFile Resume data. Only in `multipart/form-data` mode. Should be a file.
      */
     public $resume;
 
