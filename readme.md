@@ -3,7 +3,7 @@
 <h1 align="center">Lever Craft CMS 3 Plugin</h1>
 <h4 align="center">Get <a href="https://www.lever.co/">Lever</a> job details and post applications directly from Craft.</h4>
 
-<p align="center"><a href="https://scrutinizer-ci.com/g/workingconcept/lever-craft-plugin/"><img src="https://scrutinizer-ci.com/g/workingconcept/lever-craft-plugin/badges/quality-score.png?b=master" alt="Scrutinizer Status"></a></p>
+<p align="center"><a href="https://scrutinizer-ci.com/g/workingconcept/lever-craft-plugin/"><img src="https://scrutinizer-ci.com/g/workingconcept/lever-craft-plugin/badges/quality-score.png?b=master" alt="Scrutinizer status"></a></p>
 
 ---
 

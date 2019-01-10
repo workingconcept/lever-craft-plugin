@@ -18,6 +18,8 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
 use yii\web\UploadedFile;
+use GuzzleHttp\Client;
+use yii\base\Exception;
 
 /**
  * @author    Working Concept
@@ -30,12 +32,17 @@ class LeverService extends Component
     // =========================================================================
 
     /**
-     * Triggered before an application is sent to Lever.
+     * @event ApplyEvent Triggered before an application is validated.
+     */
+    const EVENT_BEFORE_VALIDATE_APPLICATION = 'beforeValidateApplication';
+
+    /**
+     * @event ApplyEvent Triggered before an application is sent to Lever.
      */
     const EVENT_BEFORE_SEND_APPLICATION = 'beforeSendApplication';
 
     /**
-     * Triggered after an application is sent to Lever.
+     * @event ApplyEvent Triggered after an application is sent to Lever.
      */
     const EVENT_AFTER_SEND_APPLICATION = 'afterSendApplication';
 
@@ -56,17 +63,21 @@ class LeverService extends Component
     /**
      * @var string
      */
-    protected $apiBaseUrl = 'https://api.lever.co/v0/';
-
-    /**
-     * @var \GuzzleHttp\Client
-     */
-    protected $client;
+    protected static $apiBaseUrl = 'https://api.lever.co/v0/';
 
     /**
      * @var boolean
      */
     protected $isConfigured;
+
+
+    // Private Properties
+    // =========================================================================
+
+    /**
+     * @var \GuzzleHttp\Client
+     */
+    private $_client;
 
 
     // Public Methods
@@ -83,22 +94,39 @@ class LeverService extends Component
 
         // populate the settings
         $this->settings = Lever::$plugin->getSettings();
+    }
 
+    /**
+     * Returns a configured Guzzle client.
+     *
+     * @return Client
+     * @throws \Exception if our API key is missing.
+     */
+    public function getClient(): Client
+    {
         // see if we've got the stuff to do the things
-        $this->isConfigured = ! empty($this->settings->apiKey) && ! empty($this->settings->site);
+        $this->isConfigured = ! empty($this->settings->apiKey) &&
+            ! empty($this->settings->site);
 
-        if ($this->isConfigured)
+        if ( ! $this->isConfigured)
         {
-            $this->client = new \GuzzleHttp\Client([
-                'base_uri' => $this->apiBaseUrl,
+            throw new Exception('Lever plugin not configured.');
+        }
+
+        if ($this->_client === null)
+        {
+            $this->_client = new Client([
+                'base_uri' => self::$apiBaseUrl,
                 'headers' => [
-                    'Content-Type' => 'applicaton/json; charset=utf-8', // set to multipart/form-data for post
+                    'Content-Type' => 'application/json; charset=utf-8',
                     'Accept'       => 'application/json'
                 ],
                 'verify' => false,
                 'debug' => false
             ]);
         }
+
+        return $this->_client;
     }
 
     /**
@@ -119,6 +147,7 @@ class LeverService extends Component
      *                      ]
      *
      * @return array
+     * @throws \Exception if our API key is missing.
      */
     public function getJobs($params = []): array
     {
@@ -157,7 +186,7 @@ class LeverService extends Component
             }
         }
 
-        $response = $this->client->get($requestUrl);
+        $response = $this->getClient()->get($requestUrl);
         $responseData = json_decode($response->getBody());
 
         $jobs = [];
@@ -177,13 +206,18 @@ class LeverService extends Component
      * @param  string  $jobId  Lever job identifier
      * 
      * @return mixed
+     * @throws \Exception if our API key is missing.
      */
-
     public function getJobById($jobId)
     {
         try 
         {
-            $response     = $this->client->get(sprintf('postings/%s/%s', $this->settings->site, $jobId));
+            $response = $this->getClient()->get(sprintf(
+                'postings/%s/%s',
+                $this->settings->site,
+                $jobId
+            ));
+
             $responseData = json_decode($response->getBody());
 
             return new LeverJob($responseData);
@@ -210,7 +244,6 @@ class LeverService extends Component
      * @return boolean
      * @throws
      */
-
     public function applyForJob($jobPostId, $test = false)
     {
         $request = Craft::$app->getRequest();
@@ -223,10 +256,10 @@ class LeverService extends Component
         if ($test)
         {
             // reconfigure client for testing
-            $this->client = new \GuzzleHttp\Client([
+            $this->_client = new Client([
                 'base_uri' => UrlHelper::baseUrl(),
                 'headers' => [
-                    'Content-Type' => 'applicaton/json; charset=utf-8', // set to multipart/form-data for post
+                    'Content-Type' => 'application/json; charset=utf-8',
                     'Accept'       => 'application/json'
                 ],
                 'verify' => false,
@@ -261,13 +294,19 @@ class LeverService extends Component
             $application->resume = UploadedFile::getInstanceByName('resume');
         }
 
+        $event = new ApplyEvent([ 'application' => $application ]);
+
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_VALIDATE_APPLICATION))
+        {
+            $this->trigger(self::EVENT_BEFORE_VALIDATE_APPLICATION, $event);
+            $application = $event->application;
+        }
+
         if ( ! $application->validate())
         {
             $this->errors = array_merge($this->errors, $application->getErrors());
             return false;
         }
-
-        $event = new ApplyEvent([ 'application' => $application ]);
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_SEND_APPLICATION))
         {
@@ -282,12 +321,16 @@ class LeverService extends Component
             return true;
         }
 
-        if ($response = $this->client->post($postUrl, [ 'multipart' => $application->toMultiPartPostData() ]))
+        if ($response = $this->getClient()->post(
+            $postUrl,
+            [ 'multipart' => $application->toMultiPartPostData() ]
+        ))
         {
-            if ($response->getStatusCode() === 200 && isset($response->getBody()->applicationId))
-            {
-                // all good!
+            $responseIsHealthy = $response->getStatusCode() === 200 &&
+                isset($response->getBody()->applicationId);
 
+            if ($responseIsHealthy)
+            {
                 if ($this->hasEventHandlers(self::EVENT_AFTER_SEND_APPLICATION))
                 {
                     $this->trigger(self::EVENT_AFTER_SEND_APPLICATION, $event);
@@ -295,11 +338,9 @@ class LeverService extends Component
 
                 return true;
             }
-            else
-            {
-                $this->errors[] = Craft::t('lever', 'Your application could not be submitted.');
-                return false;
-            }
+
+            $this->errors[] = Craft::t('lever', 'Your application could not be submitted.');
+            return false;
         }
 
         $this->errors[] = Craft::t('lever', 'There was a problem submitting your application.');

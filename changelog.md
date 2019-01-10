@@ -1,5 +1,11 @@
 # Lever Changelog
 
+## 1.0.1 - 2019-01-10
+### Added
+- Added `EVENT_BEFORE_VALIDATE_APPLICATION` event so it's possible to make adjustments to an Application before it's validated and sent.
+### Changed
+- Refactored service to use getClient() rather than establishing on init().
+
 ## 1.0.0 - 2018-12-12
 ### Changed
 - Removed `-beta` tag after testing.
