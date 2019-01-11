@@ -10,10 +10,12 @@
 
 namespace workingconcept\lever\controllers;
 
-use Craft;
 use workingconcept\lever\Lever;
+use workingconcept\lever\models\LeverJobApplication;
+use Craft;
 use craft\web\Controller;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 class ApplyController extends Controller
 {
@@ -39,23 +41,65 @@ class ApplyController extends Controller
     {
         $this->requirePostRequest();
 
-        if ($jobId = Craft::$app->getRequest()->getParam('jobId'))
+        $request = Craft::$app->getRequest();
+
+        if ($jobId = $request->getParam('jobId'))
         {
-            if (Lever::$plugin->api->applyForJob($jobId))
+            $resumeIncluded = ! empty($_FILES['resume']['tmp_name'])
+                && ! empty($_FILES['resume']['name']);
+
+            $application = new LeverJobApplication([
+                'name'     => $request->getParam('name'),
+                'email'    => $request->getParam('email'),
+                'phone'    => $request->getParam('phone'),
+                'org'      => $request->getParam('org'),
+                'urls'     => $request->getParam('urls'),
+                'comments' => $request->getParam('comments'),
+                'ip'       => $request->getUserIP(),
+                'silent'   => Lever::$plugin->getSettings()->applySilently,
+                'source'   => Lever::$plugin->getSettings()->applicationSource,
+            ]);
+
+            if ($resumeIncluded)
             {
+                $application->resume = UploadedFile::getInstanceByName('resume');
+            }
+
+            if (Lever::$plugin->api->applyForJob($jobId, $application))
+            {
+                if ($request->getAcceptsJson())
+                {
+                    return $this->asJson(['success' => true]);
+                }
+
+                Craft::$app->getSession()->setNotice('Application submitted.');
+
                 return $this->redirectToPostedUrl();
             }
-            else
+
+            if ($request->getAcceptsJson())
             {
-                Craft::$app->getSession()->setError(Craft::t('lever', 'Failed to submit job application. Please try again!'));
+                return $this->asJson(['errors' => $application->getErrors()]);
             }
-        }
-        else
-        {
-            Craft::$app->getSession()->setError(Craft::t('lever', 'Job ID missing.'));
+
+            Craft::$app->getSession()->setError(Craft::t(
+                'lever',
+                'There was a problem with the application. Please check the form and try again!'
+            ));
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'variables' => ['application' => $application]
+            ]);
+
+            return null;
         }
 
-        return $this->redirectToPostedUrl();
+        Craft::$app->getSession()->setError(Craft::t(
+            'lever',
+            'Job ID missing.'
+        ));
+
+        return null;
     }
 
     /**

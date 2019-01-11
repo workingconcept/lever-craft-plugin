@@ -25,10 +25,6 @@ Returns an array of jobs. Supply valid parameters for the [job postings API](htt
 
 Returns a specific job matching the provided Lever ID, or `false`.
 
-#### `craft.lever.errors`
-
-Returns an array of errors, relevant if you're attempting to submit a job application.
-
 #### Job Properties
 
 - `id`
@@ -67,9 +63,11 @@ You can create your own form and validation and submit it with an `action` field
 ```twig
 <h3>Apply</h3>
 
-{% if craft.lever.errors | length %}
-    {% for error in craft.lever.errors %}
-        <p class="error" role="alert">{{ error }}</p>
+{% if application is defined and application.getErrors() | length %}
+    {% for field in application.getErrors() %}
+        {% for error in field %}
+            <p class="error" role="alert">{{ error }}</p>
+        {% endfor %}
     {% endfor %}
 {% endif %}
 
@@ -79,9 +77,9 @@ You can create your own form and validation and submit it with an `action` field
     <input type="hidden" name="jobId" value="{{ job.id }}">
     <input type="hidden" name="redirect" value="{{ (craft.app.request.absoluteUrl ~ "?success=y") | hash }}">
 
-    <input type="text" name="name" required>
-    <input type="email" name="email" required>
-    <textarea name="comments"></textarea>
+    <input type="text" name="name" value="{{ application.name ?? '' }}" required>
+    <input type="email" name="email" value="{{ application.email ?? '' }}" required>
+    <textarea name="comments">{{ application.comments ?? '' }}</textarea>
 
     <input type="file" name="resume" required>
 
@@ -120,6 +118,10 @@ return [
 This will take requests like `https://site.foo/jobs/be9f3647-b59a-4272-94a0-8b937520a69f` and send them to your template, where they'll 404 if the ID is invalid.
 
 ### Events
+
+##### `EVENT_BEFORE_VALIDATE_APPLICATION`
+
+Triggered after an application is submitted and before it's validated. You can adjust `$event->application` if you need to do something custom like handle a [FilePond](https://pqina.nl/filepond/) upload and attach it to the LeverJobApplication model.
 
 ##### `EVENT_BEFORE_SEND_APPLICATION`
 

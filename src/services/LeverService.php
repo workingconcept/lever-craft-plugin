@@ -17,7 +17,6 @@ use workingconcept\lever\events\ApplyEvent;
 use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
-use yii\web\UploadedFile;
 use GuzzleHttp\Client;
 use yii\base\Exception;
 
@@ -54,11 +53,6 @@ class LeverService extends Component
      * @var \workingconcept\lever\models\Settings
      */
     public $settings;
-
-    /**
-     * @var array Populated with error message string(s) if submission fails.
-     */
-    public $errors = [];
 
     /**
      * @var string
@@ -238,15 +232,15 @@ class LeverService extends Component
      * Sends job posting to Lever.
      * https://github.com/lever/postings-api/blob/master/README.md#apply-to-a-job-posting
      *
-     * @param int  $jobPostId  Lever job identifier
-     * @param bool $test       Whether or not we want to post to our own controller here for testing
+     * @param int                  $jobPostId       Lever job identifier
+     * @param LeverJobApplication  $jobApplication  Lever job identifier
+     * @param bool                 $test            Whether or not we want to post to our own controller here for testing
      * 
      * @return boolean
      * @throws
      */
-    public function applyForJob($jobPostId, $test = false)
+    public function applyForJob($jobPostId, $jobApplication, $test = false)
     {
-        $request = Craft::$app->getRequest();
         $postUrl = sprintf('postings/%s/%s?key=%s',
             $this->settings->site,
             $jobPostId,
@@ -270,41 +264,17 @@ class LeverService extends Component
             $postUrl = UrlHelper::actionUrl('lever/apply/test');
         }
 
-        $resumeIncluded = ! empty($_FILES['resume']['tmp_name'])
-            && ! empty($_FILES['resume']['name']);
-
-        if ( ! $application = new LeverJobApplication([
-            'name'     => $request->getParam('name'),
-            'email'    => $request->getParam('email'),
-            'phone'    => $request->getParam('phone'),
-            'org'      => $request->getParam('org'),
-            'urls'     => $request->getParam('urls'),
-            'comments' => $request->getParam('comments'),
-            'ip'       => $request->getUserIP(),
-            'silent'   => $this->settings->applySilently,
-            'source'   => $this->settings->applicationSource,
-        ]))
-        {
-            array_merge($this->errors, $application->getErrors());
-            return false;
-        }
-
-        if ($resumeIncluded)
-        {
-            $application->resume = UploadedFile::getInstanceByName('resume');
-        }
-
-        $event = new ApplyEvent([ 'application' => $application ]);
+        $event = new ApplyEvent([ 'application' => $jobApplication ]);
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_VALIDATE_APPLICATION))
         {
             $this->trigger(self::EVENT_BEFORE_VALIDATE_APPLICATION, $event);
-            $application = $event->application;
+            $jobApplication = $event->application;
         }
 
-        if ( ! $application->validate())
+        if ( ! $jobApplication->validate())
         {
-            $this->errors = array_merge($this->errors, $application->getErrors());
+            Craft::info('Invalid job application.', 'lever');
             return false;
         }
 
@@ -323,7 +293,7 @@ class LeverService extends Component
 
         if ($response = $this->getClient()->post(
             $postUrl,
-            [ 'multipart' => $application->toMultiPartPostData() ]
+            [ 'multipart' => $jobApplication->toMultiPartPostData() ]
         ))
         {
             $responseIsHealthy = $response->getStatusCode() === 200 &&
@@ -339,11 +309,11 @@ class LeverService extends Component
                 return true;
             }
 
-            $this->errors[] = Craft::t('lever', 'Your application could not be submitted.');
+            Craft::info('Application may not have been submitted.', 'lever');
             return false;
         }
 
-        $this->errors[] = Craft::t('lever', 'There was a problem submitting your application.');
+        Craft::info('Application could not be sent.', 'lever');
         return false;
     }
 }

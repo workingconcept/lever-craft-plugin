@@ -12,8 +12,6 @@ namespace workingconcept\lever\variables;
 
 use workingconcept\lever\Lever;
 
-use Craft;
-
 /**
  * @author    Working Concept
  * @package   Lever
@@ -21,13 +19,13 @@ use Craft;
  */
 class LeverVariable
 {
-
     /**
      * Get a list of jobs.
      *
      * @param array $params Valid URL parameters for search.
      *
      * @return mixed
+     * @throws
      */
     public function jobs($params = [])
     {
@@ -39,32 +37,11 @@ class LeverVariable
      *
      * @param $id
      * @return mixed
+     * @throws
      */
     public function job($id)
     {
         return Lever::$plugin->api->getJobById($id);
-    }
-
-    /**
-     * Send a job application per $_POST data.
-     *
-     * @param $id
-     *
-     * @return mixed
-     */
-    public function applyForJob($id)
-    {
-        return Lever::$plugin->api->applyForJob($id);
-    }
-
-    /**
-     * Get any errors, most likely from trying to submit a job application.
-     *
-     * @return mixed
-     */
-    public function errors()
-    {
-        return Lever::$plugin->api->getErrors();
     }
 
 }
