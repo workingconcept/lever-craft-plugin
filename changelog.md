@@ -1,5 +1,9 @@
 # Lever Changelog
 
+## 1.0.3 - 2019-02-05
+### Fixed
+- Fixed a bug that might have incorrectly reported an error even though an application was submitted properly.
+
 ## 1.0.2 - 2019-01-10
 ### Changed
 - Improved job application submissions to be more straightforward with error handling. Now works like [Contact Form](https://github.com/craftcms/contact-form), including AJAX support. See updated readme.

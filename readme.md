@@ -73,9 +73,9 @@ You can create your own form and validation and submit it with an `action` field
 
 <form id="job" action="" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
     {{ csrfInput() }}
+    {{ redirectInput(craft.app.request.absoluteUrl ~ "?success=y") }}
     <input type="hidden" name="action" value="lever/apply">
     <input type="hidden" name="jobId" value="{{ job.id }}">
-    <input type="hidden" name="redirect" value="{{ (craft.app.request.absoluteUrl ~ "?success=y") | hash }}">
 
     <input type="text" name="name" value="{{ application.name ?? '' }}" required>
     <input type="email" name="email" value="{{ application.email ?? '' }}" required>

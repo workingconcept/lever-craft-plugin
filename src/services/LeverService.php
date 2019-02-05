@@ -296,8 +296,15 @@ class LeverService extends Component
             [ 'multipart' => $jobApplication->toMultiPartPostData() ]
         ))
         {
+            /**
+             * Happy submission responses include an application ID.
+             * 
+             * Here, we make sure it's a 200 response *and* that Lever
+             * was able to make a proper application out of it.
+             */
+            $responseData = json_decode($response->getBody());
             $responseIsHealthy = $response->getStatusCode() === 200 &&
-                isset($response->getBody()->applicationId);
+                isset($responseData->applicationId);
 
             if ($responseIsHealthy)
             {
