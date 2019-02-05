@@ -239,7 +239,7 @@ class LeverService extends Component
      * @return boolean
      * @throws
      */
-    public function applyForJob($jobPostId, $jobApplication, $test = false)
+    public function applyForJob($jobPostId, $jobApplication, $test = false): bool
     {
         $postUrl = sprintf('postings/%s/%s?key=%s',
             $this->settings->site,
