@@ -17,9 +17,6 @@ use craft\base\Model;
 
 class LeverJob extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string Unique job posting ID
      */
@@ -34,6 +31,13 @@ class LeverJob extends Model
      * @var object Object with location, commitment, team, and department
      */
     public $categories;
+
+    /**
+     * @var string An ISO 3166-1 alpha-2 code for a country / territory (or null to indicate an unknown country).
+     *             This is not filterable. Note: It will be released as part of the offcycle release, 
+     *             progressive waved rollout starting in September, 2022
+     */
+    public $country;
 
     /**
      * @var string Job description (as styled HTML).
@@ -78,9 +82,11 @@ class LeverJob extends Model
      */
     public $createdAt;
 
-
-    // Public Methods
-    // =========================================================================
-
+    /**
+     * @var string Describes the primary workplace environment for a job posting. May be one of `unspecified`,
+     *             `on-site`, `remote`, or `hybrid`. Not filterable.
+     *             Note: to be released in waved rollouts starting October, 2022.
+     */
+    public $workplaceType;
 
 }
