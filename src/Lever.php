@@ -28,9 +28,6 @@ use yii\base\Event;
  */
 class Lever extends \craft\base\Plugin
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var Lever
      */
@@ -50,10 +47,6 @@ class Lever extends \craft\base\Plugin
      * @var string
      */
     public $schemaVersion = '1.0.0';
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -90,10 +83,6 @@ class Lever extends \craft\base\Plugin
     {
         return LeverVariable::class;
     }
-
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

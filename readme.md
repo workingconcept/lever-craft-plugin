@@ -30,6 +30,7 @@ Returns a specific job matching the provided Lever ID, or `false`.
 - `id`
 - `text`
 - `categories`
+- `country`
 - `description`
 - `descriptionPlain`
 - `lists`
@@ -38,6 +39,7 @@ Returns a specific job matching the provided Lever ID, or `false`.
 - `hostedUrl`
 - `applyUrl`
 - `createdAt`
+- `workplaceType`
 
 ### Template Examples
 

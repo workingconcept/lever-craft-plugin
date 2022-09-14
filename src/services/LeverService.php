@@ -27,9 +27,6 @@ use yii\base\Exception;
  */
 class LeverService extends Component
 {
-    // Constants
-    // =========================================================================
-
     /**
      * @event ApplyEvent Triggered before an application is validated.
      */
@@ -44,10 +41,6 @@ class LeverService extends Component
      * @event ApplyEvent Triggered after an application is sent to Lever.
      */
     const EVENT_AFTER_SEND_APPLICATION = 'afterSendApplication';
-
-
-    // Public Properties
-    // =========================================================================
 
     /**
      * @var \workingconcept\lever\models\Settings
@@ -64,18 +57,10 @@ class LeverService extends Component
      */
     protected $isConfigured;
 
-
-    // Private Properties
-    // =========================================================================
-
     /**
      * @var \GuzzleHttp\Client
      */
     private $_client;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Initializes the service.

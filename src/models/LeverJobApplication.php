@@ -17,9 +17,6 @@ use craft\base\Model;
 
 class LeverJobApplication extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string Candidate's name
      */
@@ -79,10 +76,6 @@ class LeverJobApplication extends Model
      *           (e.g. "consent":{"marketing":true} for JSON or consent[marketing]=true for multipart/form-data)
      */
     public $consent;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

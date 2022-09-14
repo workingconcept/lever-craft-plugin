@@ -1,5 +1,9 @@
 # Lever Changelog
 
+## Unreleased
+### Added
+- Added `country` and `workplaceType` job properties. ([#2](https://github.com/workingconcept/lever-craft-plugin/issues/2))
+
 ## 1.0.3 - 2019-02-05
 ### Fixed
 - Fixed a bug that might have incorrectly reported an error even though an application was submitted properly.
