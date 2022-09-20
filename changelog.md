@@ -1,6 +1,6 @@
 # Lever Changelog
 
-## Unreleased
+## 1.0.5 - 2022-09-20
 ### Added
 - Added PHP 8 support.
 
