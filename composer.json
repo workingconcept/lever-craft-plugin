@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "php": "^7.0.0",
+        "php": "^7.0.0|^8.0.0",
         "craftcms/cms": "^3.0.0",
         "ext-json": "*"
     },
@@ -45,5 +45,11 @@
         "downloadUrl": "https://github.com/workingconcept/lever-craft-plugin/archive/master.zip",
         "developer": "Working Concept",
         "developerUrl": "https://workingconcept.com/"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
     }
 }
