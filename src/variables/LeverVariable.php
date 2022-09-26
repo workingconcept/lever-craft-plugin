@@ -10,7 +10,9 @@
 
 namespace workingconcept\lever\variables;
 
+use GuzzleHttp\Exception\GuzzleException;
 use workingconcept\lever\Lever;
+use workingconcept\lever\models\LeverJob;
 
 /**
  * @author    Working Concept
@@ -24,10 +26,10 @@ class LeverVariable
      *
      * @param array $params Valid URL parameters for search.
      *
-     * @return mixed
-     * @throws
+     * @return array
+     * @throws GuzzleException
      */
-    public function jobs($params = [])
+    public function jobs(array $params = []): array
     {
         return Lever::$plugin->api->getJobs($params);
     }
@@ -36,10 +38,10 @@ class LeverVariable
      * Get a single job by ID.
      *
      * @param $id
-     * @return mixed
-     * @throws
+     * @return bool|LeverJob
+     * @throws GuzzleException
      */
-    public function job($id)
+    public function job($id): bool|LeverJob
     {
         return Lever::$plugin->api->getJobById($id);
     }

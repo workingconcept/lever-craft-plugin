@@ -20,67 +20,67 @@ class LeverJobApplication extends Model
     /**
      * @var string Candidate's name
      */
-    public $name;
+    public string $name;
 
     /**
      * @var string Email address. Requires an "@" symbol. Candidate records will be merged when email addresses match.
      */
-    public $email;
+    public string $email;
 
     /**
      * @var \yii\web\UploadedFile Resume data. Only in `multipart/form-data` mode. Should be a file.
      */
-    public $resume;
+    public \yii\web\UploadedFile $resume;
 
     /**
      * @var string Phone number
      */
-    public $phone;
+    public string $phone;
 
     /**
      * @var string Current company / organization
      */
-    public $org;
+    public string $org;
 
     /**
      * @var array URLs for sites (Github, Twitter, LinkedIn, Dribbble, etc).
      *            Should be a JSON object like {"GitHub":"https://github.com/"} for JSON,
      *            or urls[GitHub]=https://github.com/ for multipart/form-data
      */
-    public $urls;
+    public array $urls;
 
     /**
      * @var string Additional information from the candidate
      */
-    public $comments;
+    public string $comments;
 
     /**
      * @var bool Disables confirmation email sent to candidates upon application.
      *           API accepts values of `true`, `false`, `"true"` or `"false"`.
      */
-    public $silent;
+    public bool $silent;
 
     /**
      * @var string Adds a source tag to candidate (e.g. 'LinkedIn')
      */
-    public $source;
+    public string $source;
 
     /**
      * @var string IP application was submitted from, used for detecting country for compliance reasons
      *             (e.g. `"184.23.195.146"`)
      */
-    public $ip;
+    public string $ip;
 
     /**
      * @var array Indicate whether candidate is open to being contacted about future opportunities
      *           (e.g. "consent":{"marketing":true} for JSON or consent[marketing]=true for multipart/form-data)
      */
-    public $consent;
+    public array $consent;
 
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'email', 'phone', 'org', 'comments', 'source', 'ip'], 'string'],
@@ -140,7 +140,7 @@ class LeverJobApplication extends Model
      *
      * @return string
      */
-    private function formatForPost($var)
+    private function formatForPost($var): string
     {
         if (is_bool($var) || $var === '1' || $var === '0')
         {

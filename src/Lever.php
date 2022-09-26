@@ -31,7 +31,7 @@ class Lever extends \craft\base\Plugin
     /**
      * @var Lever
      */
-    public static $plugin;
+    public static Lever $plugin;
 
     /**
      * @var bool
@@ -39,19 +39,9 @@ class Lever extends \craft\base\Plugin
     public $hasCpSettings = true;
 
     /**
-     * @var string
-     */
-    public $t9nCategory = 'lever';
-
-    /**
-     * @var string
-     */
-    public $schemaVersion = '1.0.0';
-
-    /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         self::$plugin = $this;
@@ -63,11 +53,11 @@ class Lever extends \craft\base\Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            function (Event $event) {
+            static function (Event $event) {
                 $variable = $event->sender;
                 $variable->set('lever', LeverVariable::class);
             }
-        );        
+        );
 
         Craft::info(
             Craft::t(
@@ -79,7 +69,7 @@ class Lever extends \craft\base\Plugin
         );
     }
 
-    public function defineTemplateComponent()
+    public function defineTemplateComponent(): string
     {
         return LeverVariable::class;
     }
@@ -87,7 +77,7 @@ class Lever extends \craft\base\Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?Settings
     {
         return new Settings();
     }
@@ -95,7 +85,7 @@ class Lever extends \craft\base\Plugin
     /**
      * @inheritdoc
      */
-    protected function settingsHtml(): string
+    protected function settingsHtml(): ?string
     {
         return Craft::$app->view->renderTemplate(
             'lever/settings',

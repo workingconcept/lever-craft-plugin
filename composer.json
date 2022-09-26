@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "php": "^7.0.0|^8.0.0",
+        "php": "^8.0.2",
         "craftcms/cms": "^3.0.0",
         "ext-json": "*"
     },
@@ -51,5 +51,12 @@
             "yiisoft/yii2-composer": true,
             "craftcms/plugin-installer": true
         }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "craftcms/rector": "dev-main",
+        "phpstan/phpstan": "^1.8",
+        "craftcms/phpstan": "dev-main"
     }
 }

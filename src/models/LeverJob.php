@@ -20,73 +20,73 @@ class LeverJob extends Model
     /**
      * @var string Unique job posting ID
      */
-    public $id;
+    public string $id;
 
     /**
      * @var string Job posting name
      */
-    public $text;
+    public string $text;
 
     /**
      * @var object Object with location, commitment, team, and department
      */
-    public $categories;
+    public object $categories;
 
     /**
      * @var string An ISO 3166-1 alpha-2 code for a country / territory (or null to indicate an unknown country).
-     *             This is not filterable. Note: It will be released as part of the offcycle release, 
+     *             This is not filterable. Note: It will be released as part of the offcycle release,
      *             progressive waved rollout starting in September, 2022
      */
-    public $country;
+    public string $country;
 
     /**
      * @var string Job description (as styled HTML).
      */
-    public $description;
+    public string $description;
 
     /**
      * @var string Job description (as plaintext).
      */
-    public $descriptionPlain;
+    public string $descriptionPlain;
 
     /**
      * @var string Extra lists (such as requirements, benefits, etc.) from the job posting.
      *             This is a list of `{text:NAME, content:"unstyled HTML of list elements"}`
      */
-    public $lists;
+    public string $lists;
 
     /**
      * @var string Optional closing content for the job posting (as styled HTML). This may be an empty string.
      */
-    public $additional;
+    public string $additional;
 
     /**
      * @var string Optional closing content for the job posting (as plaintext). This may be an empty string.
      */
-    public $additionalPlain;
+    public string $additionalPlain;
 
     /**
      * @var string A URL which points to Lever's hosted job posting page.
      *             [Example](https://jobs.lever.co/leverdemo/5ac21346-8e0c-4494-8e7a-3eb92ff77902)
      */
-    public $hostedUrl;
+    public string $hostedUrl;
 
     /**
      * @var string A URL which points to Lever's hosted application form to apply to the job posting.
      *             [Example](https://jobs.lever.co/leverdemo/5ac21346-8e0c-4494-8e7a-3eb92ff77902/apply)
      */
-    public $applyUrl;
+    public string $applyUrl;
 
     /**
-     * @var
+     * @var string
      */
-    public $createdAt;
+    public string $createdAt;
 
     /**
      * @var string Describes the primary workplace environment for a job posting. May be one of `unspecified`,
      *             `on-site`, `remote`, or `hybrid`. Not filterable.
      *             Note: to be released in waved rollouts starting October, 2022.
      */
-    public $workplaceType;
+    public string $workplaceType;
 
 }

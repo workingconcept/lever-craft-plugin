@@ -10,43 +10,42 @@
 
 namespace workingconcept\lever\controllers;
 
+use craft\web\UrlManager;
 use workingconcept\lever\Lever;
 use workingconcept\lever\models\LeverJobApplication;
 use Craft;
 use craft\web\Controller;
+use craft\helpers\Json;
+use workingconcept\lever\models\Settings;
+use yii\web\BadRequestHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
 
 class ApplyController extends Controller
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
     public $allowAnonymous = true;
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * Posts a job application.
      *
      * @return Response|null
-     * @throws
+     * @throws BadRequestHttpException|\craft\errors\MissingComponentException
      */
-    public function actionIndex()
+    public function actionIndex(): ?Response
     {
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
 
-        if ($jobId = $request->getParam('jobId'))
-        {
+        if ($jobId = $request->getParam('jobId')) {
             $resumeIncluded = ! empty($_FILES['resume']['tmp_name'])
                 && ! empty($_FILES['resume']['name']);
+
+            /** @var Settings $settings */
+            $settings = Lever::$plugin->getSettings();
 
             $application = new LeverJobApplication([
                 'name'     => $request->getParam('name'),
@@ -56,19 +55,16 @@ class ApplyController extends Controller
                 'urls'     => $request->getParam('urls'),
                 'comments' => $request->getParam('comments'),
                 'ip'       => $request->getUserIP(),
-                'silent'   => Lever::$plugin->getSettings()->applySilently,
-                'source'   => Lever::$plugin->getSettings()->applicationSource,
+                'silent'   => $settings->applySilently,
+                'source'   => $settings->applicationSource,
             ]);
 
-            if ($resumeIncluded)
-            {
+            if ($resumeIncluded) {
                 $application->resume = UploadedFile::getInstanceByName('resume');
             }
 
-            if (Lever::$plugin->api->applyForJob($jobId, $application))
-            {
-                if ($request->getAcceptsJson())
-                {
+            if (Lever::$plugin->api->applyForJob($jobId, $application)) {
+                if ($request->getAcceptsJson()) {
                     return $this->asJson(['success' => true]);
                 }
 
@@ -77,8 +73,7 @@ class ApplyController extends Controller
                 return $this->redirectToPostedUrl();
             }
 
-            if ($request->getAcceptsJson())
-            {
+            if ($request->getAcceptsJson()) {
                 return $this->asJson(['errors' => $application->getErrors()]);
             }
 
@@ -87,7 +82,10 @@ class ApplyController extends Controller
                 'There was a problem with the application. Please check the form and try again!'
             ));
 
-            Craft::$app->getUrlManager()->setRouteParams([
+            /** @var UrlManager $urlManager */
+            $urlManager = Craft::$app->getUrlManager();
+
+            $urlManager->setRouteParams([
                 'variables' => ['application' => $application]
             ]);
 
@@ -106,15 +104,20 @@ class ApplyController extends Controller
      * Capture a test post and save its data as a JSON file for troubleshooting.
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
-    public function actionTest()
+    public function actionTest(): Response
     {
         $this->requirePostRequest();
 
-        if (Lever::$plugin->api->applyForJob(Craft::$app->getRequest()->getParam('jobId')))
-        {
-            file_put_contents('lever-application-test-' . time() . '.json', json_encode(Craft::$app->getRequest()->post()));
+        $jobId = Craft::$app->getRequest()->getParam('jobId');
+        $application = new LeverJobApplication();
+
+        if (Lever::$plugin->api->applyForJob($jobId, $application)) {
+            $filename = 'lever-application-test-' . time() . '.json';
+            $data = Json::encode(Craft::$app->getRequest()->post());
+
+            file_put_contents($filename, $data);
 
             return $this->asJson(Craft::$app->getRequest()->post());
         }

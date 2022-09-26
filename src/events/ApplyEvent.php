@@ -19,18 +19,15 @@ use yii\base\Event;
  */
 class ApplyEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var LeverJobApplication The job application to be submitted.
      */
-    public $application;
+    public LeverJobApplication $application;
 
     /**
      * @var bool Whether the application is junk that should not be sent to Lever.
      */
 
-    public $isSpam = false;
+    public bool $isSpam = false;
 
 }
