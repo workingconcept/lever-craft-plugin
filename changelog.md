@@ -1,5 +1,9 @@
 # Lever Changelog
 
+## Unreleased
+### Added
+- Added support for Craft 4.
+
 ## 1.0.5 - 2022-09-20
 ### Added
 - Added PHP 8 support.
