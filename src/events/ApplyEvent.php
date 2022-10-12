@@ -1,6 +1,6 @@
 <?php
 /**
- * Lever plugin for Craft CMS 3.x
+ * Lever plugin for Craft CMS 4.x
  *
  * @link      https://workingconcept.com
  * @copyright Copyright (c) 2018 Working Concept Inc.

@@ -1,6 +1,6 @@
 {% import "_includes/forms" as forms %}
 
-{{ forms.textField({
+{{ forms.autosuggestField({
     first: true,
     label: 'API Key'|t,
     id: 'apiKey',
@@ -10,11 +10,12 @@
     value: settings.apiKey,
     autofocus: true,
     errors: settings.getErrors('apiKey'),
-    instructions: "Add your unique Lever API key."|t
+    instructions: "Add your unique Lever API key."|t,
+    suggestions: craft.cp.getEnvSuggestions()
 }) }}
 
 {{ forms.textField({
-    label: 'Lever Site Handle'|t,
+    label: 'External Job Site Handle'|t,
     id: 'site',
     required: true,
     name: 'site',

@@ -1,6 +1,6 @@
 <?php
 /**
- * Lever plugin for Craft CMS 3.x
+ * Lever plugin for Craft CMS 4.x
  *
  * Craft + Lever.
  *
@@ -34,9 +34,9 @@ class Lever extends \craft\base\Plugin
     public static Lever $plugin;
 
     /**
-     * @var bool
+	 * @inheritdoc
      */
-    public $hasCpSettings = true;
+    public bool $hasCpSettings = true;
 
     /**
      * @inheritdoc

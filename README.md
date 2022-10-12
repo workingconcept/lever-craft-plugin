@@ -10,7 +10,7 @@
 ## Installation & Setup
 
 - `composer require workingconcept/craft-lever`
-- `./craft install lever` or install from _Settings_ → _Plugins_ in the control panel
+- `php craft install lever` or install from _Settings_ → _Plugins_ in the control panel
 - add your site and API details in the control panel via _Settings_ → _Lever_
 
 ## Development

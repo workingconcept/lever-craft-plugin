@@ -3,6 +3,11 @@
 ## Unreleased
 ### Added
 - Added support for Craft 4.
+- API Key settings field now auto-suggests environment variables.
+
+### Fixed
+- Uploaded resumé attachments now include their original filenames.
+- Submitted application URLs and consent selections are handled properly.
 
 ## 1.0.5 - 2022-09-20
 ### Added

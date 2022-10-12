@@ -1,6 +1,6 @@
 <?php
 /**
- * Lever plugin for Craft CMS 3.x
+ * Lever plugin for Craft CMS 4.x
  *
  * Craft + Lever.
  *
@@ -11,6 +11,7 @@
 namespace workingconcept\lever\services;
 
 use craft\errors\SiteNotFoundException;
+use craft\helpers\App;
 use GuzzleHttp\Exception\GuzzleException;
 use workingconcept\lever\Lever;
 use workingconcept\lever\models\LeverJobApplication;
@@ -66,7 +67,7 @@ class LeverService extends Component
     /**
      * @var ?Client
      */
-    private ?Client $_client;
+    private ?Client $_client = null;
 
     /**
      * Initializes the service.
@@ -93,7 +94,7 @@ class LeverService extends Component
      */
     public function getClient(): Client
     {
-        // see if we've got the stuff to do the things
+        // See if we’ve got the stuff to do the things
         $this->isConfigured = ! empty($this->settings->apiKey) &&
             ! empty($this->settings->site);
 
@@ -106,7 +107,7 @@ class LeverService extends Component
                 'base_uri' => self::$apiBaseUrl,
                 'headers' => [
                     'Content-Type' => 'application/json; charset=utf-8',
-                    'Accept'       => 'application/json'
+                    'Accept' => 'application/json'
                 ],
                 'verify' => false,
                 'debug' => false
@@ -170,6 +171,7 @@ class LeverService extends Component
         }
 
         $response = $this->getClient()->get($requestUrl);
+
         $responseData = Json::decode($response->getBody());
 
         $jobs = [];
@@ -216,7 +218,7 @@ class LeverService extends Component
      * Sends job posting to Lever.
      * https://github.com/lever/postings-api/blob/master/README.md#apply-to-a-job-posting
      *
-     * @param int $jobPostId Lever job identifier
+     * @param string $jobPostId Lever job identifier
      * @param LeverJobApplication $jobApplication Lever job application
      * @param bool $test Whether we want to post to our own controller here for testing
      *
@@ -225,12 +227,12 @@ class LeverService extends Component
      * @throws SiteNotFoundException
      * @throws \Exception
      */
-    public function applyForJob(int $jobPostId, LeverJobApplication $jobApplication, bool $test = false): bool
+    public function applyForJob(string $jobPostId, LeverJobApplication $jobApplication, bool $test = false): bool
     {
         $postUrl = sprintf('postings/%s/%s?key=%s',
             $this->settings->site,
             $jobPostId,
-            $this->settings->apiKey
+            App::parseEnv($this->settings->apiKey)
         );
 
         if ($test) {
@@ -239,7 +241,7 @@ class LeverService extends Component
                 'base_uri' => UrlHelper::baseUrl(),
                 'headers' => [
                     'Content-Type' => 'application/json; charset=utf-8',
-                    'Accept'       => 'application/json'
+                    'Accept' => 'application/json'
                 ],
                 'verify' => false,
                 'debug' => false
@@ -268,7 +270,7 @@ class LeverService extends Component
         if ($event->isSpam) {
             Craft::info('Spammy job application ignored.', 'lever');
 
-            // pretend it's fine so they feel good about themselves
+            // Pretend it’s fine so they feel good about themselves
             return true;
         }
 
@@ -280,7 +282,7 @@ class LeverService extends Component
         /**
          * Happy submission responses include an application ID.
          *
-         * Here, we make sure it's a 200 response *and* that Lever
+         * Here, we make sure it’s a 200 response *and* that Lever
          * was able to make a proper application out of it.
          */
         $responseData = Json::decode($response->getBody());

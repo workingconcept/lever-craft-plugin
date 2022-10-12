@@ -1,6 +1,6 @@
 <?php
 /**
- * Lever plugin for Craft CMS 3.x
+ * Lever plugin for Craft CMS 4.x
  *
  * @link      https://workingconcept.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
@@ -28,9 +28,9 @@ class LeverJob extends Model
     public string $text;
 
     /**
-     * @var object Object with location, commitment, team, and department
+     * @var array Object with location, commitment, team, and department
      */
-    public object $categories;
+    public array $categories;
 
     /**
      * @var string An ISO 3166-1 alpha-2 code for a country / territory (or null to indicate an unknown country).
@@ -50,10 +50,10 @@ class LeverJob extends Model
     public string $descriptionPlain;
 
     /**
-     * @var string Extra lists (such as requirements, benefits, etc.) from the job posting.
+     * @var array Extra lists (such as requirements, benefits, etc.) from the job posting.
      *             This is a list of `{text:NAME, content:"unstyled HTML of list elements"}`
      */
-    public string $lists;
+    public array $lists;
 
     /**
      * @var string Optional closing content for the job posting (as styled HTML). This may be an empty string.

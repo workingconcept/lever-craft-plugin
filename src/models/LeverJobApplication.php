@@ -1,6 +1,6 @@
 <?php
 /**
- * Lever plugin for Craft CMS 3.x
+ * Lever plugin for Craft CMS 4.x
  *
  * @link      https://workingconcept.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
@@ -110,22 +110,20 @@ class LeverJobApplication extends Model
             'consent'
         ];
 
-        foreach ($fields as $field)
-        {
-            if ($this->{$field} !== null)
-            {
-                $streamElements[] = [
-                    'name'     => $field,
-                    'contents' => $this->formatForPost($this->{$field})
-                ];
+        foreach ($fields as $field) {
+            if ($this->{$field} !== null && ! empty($this->{$field})) {
+
+				if ($streamElement = $this->formatForPost($field, $this->{$field})) {
+					$streamElements = array_merge($streamElements, $streamElement);
+				}
             }
         }
 
-        if ($this->resume !== null)
-        {
-            // send the resume file resource
+        if ($this->resume !== null) {
+            // Send the resumé file resource
             $streamElements[] = [
-                'name'     => 'resume',
+                'name' => 'resume',
+				'filename' => $this->resume->name,
                 'contents' => fopen($this->resume->tempName, 'r')
             ];
         }
@@ -134,20 +132,47 @@ class LeverJobApplication extends Model
     }
 
     /**
-     * Make booleans stringy.
+	 * Prep field as post data. (Stringy booleans + flattened arrays.)
      *
-     * @param $var
+     * @param string $name
+     * @param mixed $value
      *
-     * @return string
+     * @return ?array
      */
-    private function formatForPost($var): string
+    private function formatForPost(string $name, mixed $value): ?array
     {
-        if (is_bool($var) || $var === '1' || $var === '0')
-        {
-            return $var ? 'true' : 'false';
+		if (empty($value)) {
+			return null;
+		}
+
+		if (is_bool($value) || $value === '1' || $value === '0') {
+            return [
+				[
+					'name' => $name,
+					'contents' => $value ? 'true' : 'false'
+				]
+			];
         }
 
-        return $var;
+		if (is_array($value)) {
+			$items = [];
+
+			foreach ($value as $k => $v) {
+				$items[] = [
+					'name' => $name . '[' . $k . ']',
+					'contents' => $v
+				];
+			}
+
+			return $items;
+		}
+
+		return [
+			[
+				'name' => $name,
+				'contents' => $value
+			]
+		];
     }
 
 }

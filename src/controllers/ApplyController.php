@@ -1,6 +1,6 @@
 <?php
 /**
- * Lever plugin for Craft CMS 3.x
+ * Lever plugin for Craft CMS 4.x
  *
  * Craft + Lever.
  *
@@ -26,7 +26,7 @@ class ApplyController extends Controller
     /**
      * @inheritdoc
      */
-    public $allowAnonymous = true;
+    public int|bool|array $allowAnonymous = true;
 
     /**
      * Posts a job application.
@@ -48,15 +48,16 @@ class ApplyController extends Controller
             $settings = Lever::$plugin->getSettings();
 
             $application = new LeverJobApplication([
-                'name'     => $request->getParam('name'),
-                'email'    => $request->getParam('email'),
-                'phone'    => $request->getParam('phone'),
-                'org'      => $request->getParam('org'),
-                'urls'     => $request->getParam('urls'),
+                'name' => $request->getParam('name'),
+                'email' => $request->getParam('email'),
+                'phone' => $request->getParam('phone'),
+                'org' => $request->getParam('org'),
+                'urls' => $request->getParam('urls'),
+                'consent' => $request->getParam('consent'),
                 'comments' => $request->getParam('comments'),
-                'ip'       => $request->getUserIP(),
-                'silent'   => $settings->applySilently,
-                'source'   => $settings->applicationSource,
+                'ip' => $request->getUserIP(),
+                'silent' => $settings->applySilently,
+                'source' => $settings->applicationSource,
             ]);
 
             if ($resumeIncluded) {
