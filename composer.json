@@ -11,7 +11,7 @@
         "lever"
     ],
     "support": {
-        "docs": "https://github.com/workingconcept/lever-craft-plugin/blob/main/readme.md",
+        "docs": "https://github.com/workingconcept/lever-craft-plugin/blob/main/README.md",
         "issues": "https://github.com/workingconcept/lever-craft-plugin/issues"
     },
     "license": "MIT",
@@ -35,7 +35,7 @@
         "name": "Lever",
         "handle": "lever",
         "schemaVersion": "1.0.0",
-        "changelogUrl": "https://github.com/workingconcept/lever-craft-plugin/blob/main/changelog.md",
+        "changelogUrl": "https://github.com/workingconcept/lever-craft-plugin/blob/main/CHANGELOG.md",
         "components": {
             "leverService": "workingconcept\\lever\\services\\leverService"
         },
