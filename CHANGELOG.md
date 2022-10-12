@@ -1,6 +1,6 @@
 # Lever Changelog
 
-## Unreleased
+## 2.0.0 - 2022-10-12
 ### Added
 - Added support for Craft 4.
 - API Key settings field now auto-suggests environment variables.
